@@ -1,0 +1,46 @@
+.MODEL LARGE 
+.DATA
+	Denom DD 0
+	
+.CODE
+.386
+_mod_count PROC FAR
+PUBLIC _mod_count
+
+;---  PRESERVING VALUES  ---
+
+	PUSH BP								;SAVING THE VALUE OF BP
+	MOV BP,SP							;
+	PUSH SI								;SAVING THE VALUE OF SI
+	PUSH DI								;SAVING THE VALUE OF DI
+	PUSH ES 							;SAVING THE VALUE OF ES
+	PUSH FS 							;SAVING THE VALUE OF FS
+	MOV SI,[BP+6]						;ARR1
+	MOV ES,[BP+8]						;ARR1 SEGMENT
+	MOV DI,[BP+16]						;COUNT ARR
+	MOV FS,[BP+18]						;COUNT ARR SEGMENT
+	MOV CX,[BP+10]				;N FOR THE LOOP
+	MOV EAX,[BP+12]			;DENOM
+	MOV Denom,EAX
+	loopstrt:							;LOOP TO RECIEVE AMOUNT OF NUMBERS WITH REM = i
+		MOV EAX,ES:[SI]		;EAX = ARR[I]
+		MOV EDX,0						;INITIALIZE EDX
+		DIV Denom						;EDX:EAX \ DENOM
+		MOV BX,DX						;BX = REM 
+		SHL BX,1						;BX x 2 = INDEX
+		MOV AX,FS:DI[BX]		;AX = POS_ARR[REM]
+		INC AX							;POS_ARR[REM]++
+		MOV WORD PTR FS:DI[BX],AX
+		ADD SI,4						;I++
+		LOOP loopstrt
+		
+;---  POPPING THE VALUES BACK TO THE REGISTERS  -----
+
+	POP FS
+	POP ES 	
+	POP DI				 
+	POP SI
+	POP BP
+	RET
+_mod_count ENDP
+	END
