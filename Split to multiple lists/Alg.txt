@@ -1,2 +1,0 @@
-10011010010, EranShmueli     , Alg
-11010111101, AvnerAbulafi    , Alg
