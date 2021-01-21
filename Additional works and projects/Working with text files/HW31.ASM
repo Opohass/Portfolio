@@ -1,0 +1,43 @@
+.MODEL SMALL
+.DATA
+	Count DW 0
+	Denom DD 0
+	I DD 0
+	
+.CODE
+.386
+_mod_count PROC NEAR
+PUBLIC _mod_count
+
+;---  PRESERVING VALUES  ---
+
+
+	PUSH BP				;SAVING THE VALUE OF BP
+	MOV BP,SP			;
+	PUSH SI				;SAVING THE VALUE OF SI
+	PUSH DI				;SAVING THE VALUE OF DI
+	MOV SI,[BP+4]		;ARR1
+	MOV DI,[BP+12]		;COUNT ARR
+	MOV CX,[BP+6]		;N FOR THE LOOP
+	MOV EAX,[BP+8]	;DENOM
+	MOV Denom,EAX
+	loopstrt:						;LOOP TO RECIEVE AMOUNT OF NUMBERS WITH REM = i
+		MOV EAX,[SI]		;EAX = ARR[I]
+		MOV EDX,0					;INITIALIZE EDX
+		DIV Denom					;EDX:EAX \ DENOM
+		MOV BX,DX					;BX = REM 
+		SHL BX,1					;BX x 2 = INDEX
+		MOV AX,DI[BX]		;AX = POS_ARR[REM]
+		INC AX						;POS_ARR[REM]++
+		MOV WORD PTR DI[BX],AX		
+		ADD SI,4					;I++
+		LOOP loopstrt
+
+;---  POPPING THE VALUES BACK TO THE REGISTERS  -----
+		
+	POP DI				 
+	POP SI
+	POP BP
+	RET
+_mod_count ENDP
+	END
